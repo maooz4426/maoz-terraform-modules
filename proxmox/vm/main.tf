@@ -19,11 +19,6 @@ resource "tailscale_tailnet_key" "auth_key" {
   tags          = [for t in var.tailscale_tags : "tag:${t}"]
 }
 
-moved {
-  from = proxmox_download_file.ubuntu_cloud_image
-  to   = proxmox_download_file.cloud_image
-}
-
 resource "proxmox_download_file" "cloud_image" {
   content_type        = "iso"
   datastore_id        = var.image_datastore_id
