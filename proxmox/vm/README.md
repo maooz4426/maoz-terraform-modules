@@ -23,7 +23,7 @@ cloud-init プロビジョニングとオプションの Tailscale 統合を備�
 
 ```hcl
 module "vm" {
-  source = "github.com/maoz/maoz-terraform-modules//proxmox/vm"
+  source = "github.com/maooz4426/maoz-terraform-modules//proxmox/vm?ref=main"
 
   name            = "my-vm"
   node_name       = "pve"
@@ -45,7 +45,7 @@ module "vm" {
 
 ```hcl
 module "vm" {
-  source = "github.com/maoz/maoz-terraform-modules//proxmox/vm"
+  source = "git::https://github.com/maooz4426/maoz-terraform-modules.git//proxmox/vm?ref=main"
 
   name            = "my-vm"
   node_name       = "pve"
