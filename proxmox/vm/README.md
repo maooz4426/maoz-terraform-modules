@@ -45,7 +45,7 @@ module "vm" {
 
 ```hcl
 module "vm" {
-  source = "git::https://github.com/maooz4426/maoz-terraform-modules.git//proxmox/vm?ref=main"
+  source = "github.com/maooz4426/maoz-terraform-modules//proxmox/vm?ref=main"
 
   name            = "my-vm"
   node_name       = "pve"
