@@ -113,3 +113,4 @@ Tailscale はデフォルトで無効です。`tailscale_oauth_client_id` に値
 ### cloud-init の変更について
 
 cloud-init の設定は VM 作成時にのみ適用されます。作成後に `cloud_init_packages` や `cloud_init_runcmd` などを変更しても、既存の VM には反映されません（初期化ブロックに `lifecycle.ignore_changes` が設定されています）。
+
