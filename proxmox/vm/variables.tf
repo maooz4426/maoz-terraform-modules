@@ -23,14 +23,8 @@ variable "disk_size" {
   type        = number
 }
 
-variable "image_url" {
-  description = "OS cloud image URL to download (default: Ubuntu 24.04 LTS Noble)"
-  type        = string
-  default     = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-}
-
-variable "image_datastore_id" {
-  description = "Proxmox datastore ID for downloading cloud images"
+variable "os_image_id" {
+  description = "Proxmox file ID for the OS image (e.g. from proxmox_virtual_environment_download_file)"
   type        = string
 }
 
