@@ -4,7 +4,7 @@ cloud-init プロビジョニングとオプションの Tailscale 統合を備�
 
 ## 機能
 
-- 任意の URL からクラウドイメージをダウンロード（デフォルト: Ubuntu 24.04 LTS Noble）
+- 任意の OS イメージ（ISO / qcow2 / img など）を外部から注入して起動
 - cloud-init によるプロビジョニング（ユーザー、SSH 鍵、パッケージ、カスタムコマンド）
 - OAuth クライアントを使った Tailscale のインストールと登録（オプション）
 - QEMU ゲストエージェントをデフォルトで有効化
@@ -22,6 +22,13 @@ cloud-init プロビジョニングとオプションの Tailscale 統合を備�
 ### 最小構成
 
 ```hcl
+resource "proxmox_virtual_environment_download_file" "ubuntu" {
+  node_name    = "pve"
+  content_type = "import"
+  datastore_id = "local"
+  url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+}
+
 module "vm" {
   source = "github.com/maooz4426/maoz-terraform-modules//proxmox/vm?ref=main"
 
@@ -31,7 +38,7 @@ module "vm" {
   memory_size     = 2048
   disk_size       = 20
 
-  image_datastore_id     = "local"
+  os_image_id            = proxmox_virtual_environment_download_file.ubuntu.id
   cloudinit_datastore_id = "local"
   disk_datastore_id      = "local-lvm"
   network_bridge         = "vmbr0"
@@ -44,6 +51,13 @@ module "vm" {
 ### Tailscale 有効化
 
 ```hcl
+resource "proxmox_virtual_environment_download_file" "ubuntu" {
+  node_name    = "pve"
+  content_type = "import"
+  datastore_id = "local"
+  url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+}
+
 module "vm" {
   source = "github.com/maooz4426/maoz-terraform-modules//proxmox/vm?ref=main"
 
@@ -53,7 +67,7 @@ module "vm" {
   memory_size     = 4096
   disk_size       = 40
 
-  image_datastore_id     = "local"
+  os_image_id            = proxmox_virtual_environment_download_file.ubuntu.id
   cloudinit_datastore_id = "local"
   disk_datastore_id      = "local-lvm"
   network_bridge         = "vmbr0"
@@ -75,13 +89,12 @@ module "vm" {
 | `cpu_core_number` | `number` | — | yes | CPU コア数 |
 | `memory_size` | `number` | — | yes | メモリサイズ (MB) |
 | `disk_size` | `number` | — | yes | ディスクサイズ (GB) |
-| `image_datastore_id` | `string` | — | yes | クラウドイメージの保存先データストア ID |
+| `os_image_id` | `string` | — | yes | OS イメージのファイル ID（`proxmox_virtual_environment_download_file` の id 等）|
 | `cloudinit_datastore_id` | `string` | — | yes | cloud-init スニペットの保存先データストア ID |
 | `disk_datastore_id` | `string` | — | yes | VM ディスクの保存先データストア ID |
 | `network_bridge` | `string` | — | yes | Proxmox ネットワークブリッジ名（例: `vmbr0`）|
 | `ssh_public_key` | `string` | — | yes | VM に注入する SSH 公開鍵 |
 | `user_password` | `string` | — | yes | VM ユーザーのハッシュ化済みパスワード（sensitive）|
-| `image_url` | `string` | Ubuntu 24.04 LTS Noble | no | ダウンロードするクラウドイメージの URL |
 | `cpu_type` | `string` | `"x86-64-v2-AES"` | no | CPU タイプ |
 | `cloud_init_packages` | `list(string)` | `["qemu-guest-agent"]` | no | cloud-init でインストールするパッケージ |
 | `cloud_init_runcmd` | `list(string)` | qemu-guest-agent の有効化・起動 | no | cloud-init で実行するコマンド |
