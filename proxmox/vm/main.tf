@@ -19,15 +19,6 @@ resource "tailscale_tailnet_key" "auth_key" {
   tags          = [for t in var.tailscale_tags : "tag:${t}"]
 }
 
-resource "proxmox_download_file" "cloud_image" {
-  content_type        = "iso"
-  datastore_id        = var.image_datastore_id
-  node_name           = var.node_name
-  url                 = var.image_url
-  file_name           = basename(var.image_url)
-  overwrite           = false
-  overwrite_unmanaged = true
-}
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
   content_type = "snippets"
@@ -65,7 +56,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   disk {
     datastore_id = var.disk_datastore_id
-    file_id      = proxmox_download_file.cloud_image.id
+    file_id      = var.os_image_id
     interface    = "scsi0"
     size         = var.disk_size
   }
