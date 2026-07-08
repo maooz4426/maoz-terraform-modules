@@ -13,12 +13,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+      - uses: actions/checkout@v7
 
       - name: Generate terraform docs
-        uses: terraform-docs/gh-actions@v1
+        uses: terraform-docs/gh-actions@v1.4.1
         with:
           working-dir: proxmox/vm
           output-file: README.md
