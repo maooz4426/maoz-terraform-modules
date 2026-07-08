@@ -80,32 +80,8 @@ module "vm" {
 }
 ```
 
-## 入力変数
-
-| 名前 | 型 | デフォルト | 必須 | 説明 |
-|---|---|---|---|---|
-| `name` | `string` | — | yes | VM 名 |
-| `node_name` | `string` | — | yes | Proxmox ノード名 |
-| `cpu_core_number` | `number` | — | yes | CPU コア数 |
-| `memory_size` | `number` | — | yes | メモリサイズ (MB) |
-| `disk_size` | `number` | — | yes | ディスクサイズ (GB) |
-| `os_image_id` | `string` | — | yes | OS イメージのファイル ID（`proxmox_virtual_environment_download_file` の id 等）|
-| `cloudinit_datastore_id` | `string` | — | yes | cloud-init スニペットの保存先データストア ID |
-| `disk_datastore_id` | `string` | — | yes | VM ディスクの保存先データストア ID |
-| `network_bridge` | `string` | — | yes | Proxmox ネットワークブリッジ名（例: `vmbr0`）|
-| `ssh_public_key` | `string` | — | yes | VM に注入する SSH 公開鍵 |
-| `user_password` | `string` | — | yes | VM ユーザーのハッシュ化済みパスワード（sensitive）|
-| `cpu_type` | `string` | `"x86-64-v2-AES"` | no | CPU タイプ |
-| `cloud_init_packages` | `list(string)` | `["qemu-guest-agent"]` | no | cloud-init でインストールするパッケージ |
-| `cloud_init_runcmd` | `list(string)` | qemu-guest-agent の有効化・起動 | no | cloud-init で実行するコマンド |
-| `tailscale_oauth_client_id` | `string` | `""` | no | Tailscale OAuth クライアント ID。空文字で Tailscale を無効化 |
-| `tailscale_tags` | `list(string)` | `["vm"]` | no | Tailscale ACL タグ（`tag:` プレフィックスは不要）|
-
-## 出力値
-
-| 名前 | 説明 |
-|---|---|
-| `ip_addresses` | VM の IPv4 アドレス一覧 |
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
 
 ## 補足
 

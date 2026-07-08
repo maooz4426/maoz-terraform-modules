@@ -1,0 +1,26 @@
+name: terraform-docs
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Generate terraform docs
+        uses: terraform-docs/gh-actions@v1
+        with:
+          working-dir: proxmox/vm
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
