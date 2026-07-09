@@ -88,10 +88,6 @@ module "vm" {
 | <a name="provider_proxmox"></a> [proxmox](#provider\_proxmox) | ~> 0.77 |
 | <a name="provider_tailscale"></a> [tailscale](#provider\_tailscale) | ~> 0.17 |
 
-## Modules
-
-No modules.
-
 ## Resources
 
 | Name | Type |
