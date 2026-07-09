@@ -18,7 +18,7 @@ jobs:
       - name: Generate terraform docs
         uses: terraform-docs/gh-actions@v1.4.1
         with:
-          working-dir: ./proxmox/
-          output-file: README.md
+          find-dir: ./
           output-method: inject
+          args: --hide-empty
           git-push: "true"
