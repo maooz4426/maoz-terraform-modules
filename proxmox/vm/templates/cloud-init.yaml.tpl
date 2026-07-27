@@ -1,19 +1,17 @@
 #cloud-config
+# 最小ブートストラップのみ。それ以外の構成は ansible/ が担当する。
+hostname: ${host_name}
 users:
-  - name: ${name}
+  - name: ${user_name}
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     lock_passwd: false
     passwd: ${user_password}
     ssh_authorized_keys:
-      - ${ssh_public_key}
+%{ for key in ssh_public_keys ~}
+      - ${key}
+%{ endfor ~}
 packages:
-%{ for package in packages ~}
-  - ${package}
-%{ endfor ~}
+  - qemu-guest-agent # Terraform が VM の IP を取得するために必須
 runcmd:
-%{ for cmd in runcmd ~}
-  - |
-    ${indent(4, cmd)}
-%{ endfor ~}
-
+  - systemctl enable --now qemu-guest-agent

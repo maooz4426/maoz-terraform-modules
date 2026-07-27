@@ -1,49 +1,23 @@
-locals {
-  tailscale_enabled = var.tailscale_oauth_client_id != ""
-
-  all_runcmd = concat(
-    var.cloud_init_runcmd,
-    [for k in tailscale_tailnet_key.auth_key : join("\n", [
-      "curl -fsSL https://tailscale.com/install.sh | sh",
-      "tailscale up --auth-key=${k.key}",
-    ])]
-  )
-}
-
-resource "tailscale_tailnet_key" "auth_key" {
-  # tailscale使わない時はfalseにするため
-  count         = local.tailscale_enabled ? 1 : 0
-  reusable      = true
-  ephemeral     = false
-  preauthorized = true
-  tags          = [for t in var.tailscale_tags : "tag:${t}"]
-}
-
-
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
   content_type = "snippets"
   datastore_id = var.cloudinit_datastore_id
   node_name    = var.node_name
 
-  lifecycle {
-    ignore_changes = [source_raw]
-  }
-
   source_raw {
-    file_name = "${var.name}-user-data.yaml"
+    file_name = "${var.host_name}-user-data.yaml"
     data = templatefile("${path.module}/templates/cloud-init.yaml.tpl", {
-      name           = var.name
-      user_password  = var.user_password
-      ssh_public_key = var.ssh_public_key
-      packages       = var.cloud_init_packages
-      runcmd         = local.all_runcmd
+      host_name       = var.host_name
+      user_name       = var.user_name
+      user_password   = var.user_password
+      ssh_public_keys = var.ssh_public_keys
     })
   }
 }
 
 resource "proxmox_virtual_environment_vm" "vm" {
-  name      = var.name
-  node_name = var.node_name
+  name       = var.host_name
+  node_name  = var.node_name
+  boot_order = ["scsi0"]
 
   cpu {
     cores = var.cpu_core_number
@@ -61,6 +35,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
     size         = var.disk_size
   }
 
+  serial_device {}
+
   network_device {
     bridge = var.network_bridge
     model  = "virtio"
@@ -75,17 +51,10 @@ resource "proxmox_virtual_environment_vm" "vm" {
     }
   }
 
-  # qemu-guest-agentを起動させる
+  # qemu-guest-agent は Terraform が VM の IP を取得するために必須
   # https://registry.terraform.io/providers/bpg/proxmox/latest/docs/resources/virtual_environment_vm#qemu-guest-agent
   agent {
     enabled = true
-    timeout = "120s"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      initialization,
-    ]
+    timeout = "300s"
   }
 }
-

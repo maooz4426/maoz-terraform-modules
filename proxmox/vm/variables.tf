@@ -1,5 +1,10 @@
-variable "name" {
+variable "host_name" {
   description = "VM name"
+  type        = string
+}
+
+variable "user_name" {
+  description = "VM user name"
   type        = string
 }
 
@@ -49,34 +54,9 @@ variable "cpu_type" {
   default     = "x86-64-v2-AES"
 }
 
-variable "cloud_init_packages" {
-  type    = list(string)
-  default = ["qemu-guest-agent"]
-}
-
-variable "cloud_init_runcmd" {
-  type = list(string)
-  default = [
-    "systemctl enable qemu-guest-agent",
-    "systemctl start qemu-guest-agent"
-  ]
-}
-
-variable "tailscale_oauth_client_id" {
-  description = "Tailscale OAuth client ID"
-  type        = string
-  default     = ""
-}
-
-variable "tailscale_tags" {
-  description = "Tailscale ACL tags (without 'tag:' prefix)"
+variable "ssh_public_keys" {
+  description = "SSH public keys for VM access"
   type        = list(string)
-  default     = ["vm"]
-}
-
-variable "ssh_public_key" {
-  description = "SSH public key for VM access"
-  type        = string
 }
 
 variable "user_password" {
@@ -84,4 +64,3 @@ variable "user_password" {
   type        = string
   sensitive   = true
 }
-
