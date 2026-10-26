@@ -1,3 +1,28 @@
+# aws/gha-oidc-role
+
+GitHub Actions の OIDC を信頼して `sts:AssumeRoleWithWebIdentity` を許可する IAM ロールを作成し、指定したポリシードキュメントを IAM ポリシーとしてアタッチする Terraform モジュール。特定リポジトリからの GitHub Actions ワークフローに AWS 権限を付与する用途に使う。
+
+## usage
+
+```hcl
+data "aws_iam_policy_document" "this" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
+    resources = ["arn:aws:s3:::my-bucket/*"]
+  }
+}
+
+module "gha_oidc_role" {
+  source = "github.com/maooz4426/maoz-terraform-modules//aws/gha-oidc-role?ref=main"
+
+  role_name         = "github-actions-deploy"
+  github_repo       = "maooz4426/my-app"
+  oidc_provider_arn = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+  policy_document   = data.aws_iam_policy_document.this.json
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 
 

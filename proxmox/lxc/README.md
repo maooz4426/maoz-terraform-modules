@@ -1,3 +1,23 @@
+# proxmox/lxc
+
+DHCP による IPv4 ネットワークと SSH 公開鍵を備えた、非特権 (unprivileged) の Proxmox LXC コンテナを作成する Terraform モジュール。ネスト有効・任意のデバイスパススルーに対応する。
+
+## usage
+
+```hcl
+module "lxc" {
+  source = "github.com/maooz4426/maoz-terraform-modules//proxmox/lxc?ref=main"
+
+  node_name           = "pve"
+  vm_id               = 200
+  hostname            = "my-container"
+  os_template_file_id = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+  ssh_public_keys     = [file("~/.ssh/id_ed25519.pub")]
+  disk_datastore_id   = "local-lvm"
+  network_bridge      = "vmbr0"
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
